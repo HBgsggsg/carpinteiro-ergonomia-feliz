@@ -70,6 +70,21 @@ const images = [
 const Index = () => {
   const [screen, setScreen] = useState<Screen>("home");
   const [answers, setAnswers] = useState<Answer[]>([]);
+  const [checkedRisks, setCheckedRisks] = useState<string[]>([]);
+
+  const riskLevel = checkedRisks.length === 0
+    ? null
+    : checkedRisks.length <= 2
+      ? "low"
+      : checkedRisks.length <= 4
+        ? "moderate"
+        : "high";
+
+  const toggleRisk = (id: string) => {
+    setCheckedRisks((prev) =>
+      prev.includes(id) ? prev.filter((r) => r !== id) : [...prev, id]
+    );
+  };
 
   if (screen === "quiz") {
     return (
