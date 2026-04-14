@@ -10,7 +10,7 @@ import {
   StretchHorizontal,
   BicepsFlexed,
   ArrowDown,
-  ShieldAlert,
+  
 } from "lucide-react";
 import carpenterWorkbench from "@/assets/carpenter-workbench.jpg";
 import carpenterSanding from "@/assets/carpenter-sanding.jpg";
