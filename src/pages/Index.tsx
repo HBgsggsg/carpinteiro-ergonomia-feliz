@@ -51,15 +51,6 @@ const risks = [
   },
 ];
 
-const riskChecklist = [
-  { id: "back", label: "Sinto dores nas costas após um dia de trabalho" },
-  { id: "shoulders", label: "Tenho dores nos ombros ou braços ao serrar ou martelar" },
-  { id: "knees", label: "Passo longos períodos ajoelhado ou agachado" },
-  { id: "vibration", label: "Uso ferramentas com vibração (lixadeira, rebarbadora) diariamente" },
-  { id: "breaks", label: "Trabalho mais de 2 horas seguidas sem fazer pausas" },
-  { id: "posture", label: "Trabalho frequentemente com o tronco curvado para a frente" },
-];
-
 const images = [
   { src: carpenterWorkbench, alt: "Carpinteiro a trabalhar numa bancada de madeira", caption: "Trabalho em bancada" },
   { src: carpenterSanding, alt: "Carpinteiro a usar lixadeira elétrica", caption: "Ferramentas com vibração" },
@@ -69,21 +60,6 @@ const images = [
 const Index = () => {
   const [screen, setScreen] = useState<Screen>("home");
   const [answers, setAnswers] = useState<Answer[]>([]);
-  const [checkedRisks, setCheckedRisks] = useState<string[]>([]);
-
-  const riskLevel = checkedRisks.length === 0
-    ? null
-    : checkedRisks.length <= 2
-      ? "low"
-      : checkedRisks.length <= 4
-        ? "moderate"
-        : "high";
-
-  const toggleRisk = (id: string) => {
-    setCheckedRisks((prev) =>
-      prev.includes(id) ? prev.filter((r) => r !== id) : [...prev, id]
-    );
-  };
 
   if (screen === "quiz") {
     return (
