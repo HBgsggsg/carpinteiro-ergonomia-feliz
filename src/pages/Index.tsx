@@ -3,7 +3,6 @@ import Questionnaire, { type Answer } from "@/components/Questionnaire";
 import Results from "@/components/Results";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   ClipboardCheck,
   AlertTriangle,
