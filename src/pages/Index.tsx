@@ -3,6 +3,7 @@ import Questionnaire, { type Answer } from "@/components/Questionnaire";
 import Results from "@/components/Results";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   ClipboardCheck,
   AlertTriangle,
@@ -10,6 +11,7 @@ import {
   StretchHorizontal,
   BicepsFlexed,
   ArrowDown,
+  ShieldAlert,
 } from "lucide-react";
 import carpenterWorkbench from "@/assets/carpenter-workbench.jpg";
 import carpenterSanding from "@/assets/carpenter-sanding.jpg";
@@ -50,6 +52,15 @@ const risks = [
   },
 ];
 
+const riskChecklist = [
+  { id: "back", label: "Sinto dores nas costas após um dia de trabalho" },
+  { id: "shoulders", label: "Tenho dores nos ombros ou braços ao serrar ou martelar" },
+  { id: "knees", label: "Passo longos períodos ajoelhado ou agachado" },
+  { id: "vibration", label: "Uso ferramentas com vibração (lixadeira, rebarbadora) diariamente" },
+  { id: "breaks", label: "Trabalho mais de 2 horas seguidas sem fazer pausas" },
+  { id: "posture", label: "Trabalho frequentemente com o tronco curvado para a frente" },
+];
+
 const images = [
   { src: carpenterWorkbench, alt: "Carpinteiro a trabalhar numa bancada de madeira", caption: "Trabalho em bancada" },
   { src: carpenterSanding, alt: "Carpinteiro a usar lixadeira elétrica", caption: "Ferramentas com vibração" },
@@ -59,6 +70,21 @@ const images = [
 const Index = () => {
   const [screen, setScreen] = useState<Screen>("home");
   const [answers, setAnswers] = useState<Answer[]>([]);
+  const [checkedRisks, setCheckedRisks] = useState<string[]>([]);
+
+  const riskLevel = checkedRisks.length === 0
+    ? null
+    : checkedRisks.length <= 2
+      ? "low"
+      : checkedRisks.length <= 4
+        ? "moderate"
+        : "high";
+
+  const toggleRisk = (id: string) => {
+    setCheckedRisks((prev) =>
+      prev.includes(id) ? prev.filter((r) => r !== id) : [...prev, id]
+    );
+  };
 
   if (screen === "quiz") {
     return (
@@ -147,6 +173,76 @@ const Index = () => {
               </Card>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Risk Checklist */}
+      <section className="px-6 py-16">
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-destructive/10 mb-4">
+              <ShieldAlert className="w-6 h-6 text-destructive" />
+            </div>
+            <h2 className="text-2xl font-semibold text-foreground">
+              Veja se está em risco
+            </h2>
+            <p className="text-muted-foreground mt-2">
+              Assinale as situações que se aplicam ao seu dia a dia de trabalho.
+            </p>
+          </div>
+
+          <Card className="border-border/50">
+            <CardContent className="p-6 space-y-4">
+              {riskChecklist.map((item) => (
+                <label
+                  key={item.id}
+                  className="flex items-start gap-3 cursor-pointer group"
+                >
+                  <Checkbox
+                    checked={checkedRisks.includes(item.id)}
+                    onCheckedChange={() => toggleRisk(item.id)}
+                    className="mt-0.5"
+                  />
+                  <span className="text-sm text-foreground leading-relaxed group-hover:text-primary transition-colors">
+                    {item.label}
+                  </span>
+                </label>
+              ))}
+            </CardContent>
+          </Card>
+
+          {riskLevel && (
+            <div
+              className={`mt-6 rounded-xl p-5 text-center space-y-3 ${
+                riskLevel === "low"
+                  ? "bg-success/10 border border-success/30"
+                  : riskLevel === "moderate"
+                    ? "bg-warning/10 border border-warning/30"
+                    : "bg-destructive/10 border border-destructive/30"
+              }`}
+            >
+              <p className="font-semibold text-foreground">
+                {riskLevel === "low" && "Risco Baixo — Boas práticas!"}
+                {riskLevel === "moderate" && "Risco Moderado — Atenção necessária"}
+                {riskLevel === "high" && "Risco Elevado — Ação recomendada"}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {riskLevel === "low" &&
+                  "Parece que tem bons hábitos, mas faça o questionário completo para uma avaliação detalhada."}
+                {riskLevel === "moderate" &&
+                  "Existem alguns fatores de risco. Recomendamos que faça o questionário completo para receber sugestões personalizadas."}
+                {riskLevel === "high" &&
+                  "Vários fatores de risco identificados. É importante avaliar a sua situação com o questionário completo."}
+              </p>
+              <Button
+                onClick={() => setScreen("quiz")}
+                className="gap-2 mt-1"
+              >
+                <ClipboardCheck className="w-4 h-4" />
+                Fazer Questionário Completo
+              </Button>
+            </div>
+          )}
         </div>
       </section>
 
