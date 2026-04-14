@@ -3,6 +3,7 @@ import Questionnaire, { type Answer } from "@/components/Questionnaire";
 import Results from "@/components/Results";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   ClipboardCheck,
   AlertTriangle,
@@ -10,6 +11,7 @@ import {
   StretchHorizontal,
   BicepsFlexed,
   ArrowDown,
+  ShieldAlert,
 } from "lucide-react";
 import carpenterWorkbench from "@/assets/carpenter-workbench.jpg";
 import carpenterSanding from "@/assets/carpenter-sanding.jpg";
