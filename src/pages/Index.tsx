@@ -231,9 +231,6 @@ const Index = () => {
       </section>
 
 
-      {/* CTA */}
-      <section className="px-6 py-16 text-center">
-
       {/* Workplace Risk Assessment */}
       <section className="px-6 py-16 max-w-5xl mx-auto">
         <div className="text-center mb-10 space-y-3">
