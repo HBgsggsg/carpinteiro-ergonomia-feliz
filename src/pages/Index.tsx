@@ -111,6 +111,34 @@ const ratingOptions: { value: Rating; label: string; score: number; activeClasse
 const Index = () => {
   const [screen, setScreen] = useState<Screen>("home");
   const [answers, setAnswers] = useState<Answer[]>([]);
+  const [ratings, setRatings] = useState<Record<string, Rating>>({});
+
+  const ratedCount = Object.keys(ratings).length;
+  const totalScore = Object.values(ratings).reduce((sum, r) => {
+    return sum + (ratingOptions.find((o) => o.value === r)?.score ?? 0);
+  }, 0);
+  const maxScore = workplaceFactors.length * 2;
+  const allRated = ratedCount === workplaceFactors.length;
+
+  let overallLabel = "";
+  let overallClasses = "";
+  let overallTip = "";
+  if (allRated) {
+    const ratio = totalScore / maxScore;
+    if (ratio <= 0.25) {
+      overallLabel = "Risco Baixo";
+      overallClasses = "bg-success/10 border-success/40 text-success";
+      overallTip = "O posto de trabalho está em boas condições. Mantenha as boas práticas e faça revisões periódicas.";
+    } else if (ratio <= 0.6) {
+      overallLabel = "Risco Moderado";
+      overallClasses = "bg-warning/10 border-warning/40 text-warning";
+      overallTip = "Existem fatores a melhorar. Aplique as recomendações abaixo para reduzir riscos a curto prazo.";
+    } else {
+      overallLabel = "Risco Elevado";
+      overallClasses = "bg-destructive/10 border-destructive/40 text-destructive";
+      overallTip = "O posto apresenta riscos significativos. Atue com prioridade nos fatores avaliados como 'Mau'.";
+    }
+  }
 
   if (screen === "quiz") {
     return (
