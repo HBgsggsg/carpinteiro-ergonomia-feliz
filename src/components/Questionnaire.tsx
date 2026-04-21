@@ -99,7 +99,7 @@ interface Props {
 export default function Questionnaire({ onComplete }: Props) {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
-  const [selected, setSelected] = useState<string | undefined>();
+  const [selected, setSelected] = useState<string | undefined>(undefined);
 
   const q = questions[current];
   const progress = ((current) / questions.length) * 100;
@@ -114,8 +114,7 @@ export default function Questionnaire({ onComplete }: Props) {
 
     if (current < questions.length - 1) {
       setCurrent(current + 1);
-      const prev = newAnswers.find((a) => a.questionId === questions[current + 1].id);
-      setSelected(prev ? String(prev.value) : undefined);
+      setSelected(undefined);
     } else {
       onComplete(newAnswers);
     }
@@ -124,8 +123,7 @@ export default function Questionnaire({ onComplete }: Props) {
   const handleBack = () => {
     if (current > 0) {
       setCurrent(current - 1);
-      const prev = answers.find((a) => a.questionId === questions[current - 1].id);
-      setSelected(prev ? String(prev.value) : undefined);
+      setSelected(undefined);
     }
   };
 
@@ -144,10 +142,15 @@ export default function Questionnaire({ onComplete }: Props) {
             {q.text}
           </h2>
 
-          <RadioGroup value={selected} onValueChange={setSelected} className="space-y-3">
+          <RadioGroup
+            key={q.id}
+            value={selected ?? ""}
+            onValueChange={setSelected}
+            className="space-y-3"
+          >
             {q.options.map((opt) => (
               <Label
-                key={opt.value}
+                key={`${q.id}-${opt.value}`}
                 htmlFor={`opt-${opt.value}`}
                 className="flex items-center gap-3 rounded-lg border border-border p-4 cursor-pointer transition-colors hover:bg-secondary data-[state=checked]:border-primary data-[state=checked]:bg-primary/5"
               >
