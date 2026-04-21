@@ -62,6 +62,52 @@ const images = [
   { src: carpenterKneeling, alt: "Carpinteiro ajoelhado a instalar pavimento", caption: "Trabalho ao nível do chão" },
 ];
 
+const workplaceFactors = [
+  {
+    id: "iluminacao",
+    icon: Lightbulb,
+    title: "Iluminação",
+    question: "A luz do espaço de trabalho é suficiente para trabalhar com precisão?",
+    tip: "Reforce a iluminação natural ou adicione focos LED direcionados na bancada.",
+  },
+  {
+    id: "ruido",
+    icon: Volume2,
+    title: "Ruído",
+    question: "A exposição a ferramentas barulhentas (serras, lixadeiras) é controlada?",
+    tip: "Use protetores auriculares e faça pausas em ambientes silenciosos.",
+  },
+  {
+    id: "temperatura",
+    icon: Thermometer,
+    title: "Temperatura e ventilação",
+    question: "O espaço tem temperatura confortável e boa ventilação?",
+    tip: "Garanta circulação de ar e evite trabalhar em extremos de calor ou frio.",
+  },
+  {
+    id: "po",
+    icon: Wind,
+    title: "Pó e partículas",
+    question: "A exposição a serradura e poeiras de madeira é minimizada?",
+    tip: "Use máscara FFP2/FFP3 e instale aspiração localizada nas máquinas.",
+  },
+  {
+    id: "espaco",
+    icon: LayoutGrid,
+    title: "Espaço de trabalho",
+    question: "O espaço está organizado, sem obstáculos e com circulação segura?",
+    tip: "Mantenha o chão livre, ferramentas arrumadas e zonas de passagem desimpedidas.",
+  },
+] as const;
+
+type Rating = "bom" | "razoavel" | "mau";
+
+const ratingOptions: { value: Rating; label: string; score: number; activeClasses: string; dot: string }[] = [
+  { value: "bom", label: "Bom", score: 0, activeClasses: "bg-success/15 border-success text-success", dot: "bg-success" },
+  { value: "razoavel", label: "Razoável", score: 1, activeClasses: "bg-warning/15 border-warning text-warning", dot: "bg-warning" },
+  { value: "mau", label: "Mau", score: 2, activeClasses: "bg-destructive/15 border-destructive text-destructive", dot: "bg-destructive" },
+];
+
 const Index = () => {
   const [screen, setScreen] = useState<Screen>("home");
   const [answers, setAnswers] = useState<Answer[]>([]);
