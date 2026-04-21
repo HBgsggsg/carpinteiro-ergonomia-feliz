@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Questionnaire, { type Answer } from "@/components/Questionnaire";
 import Results from "@/components/Results";
+import Splash from "@/components/Splash";
+import Profession from "@/components/Profession";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -21,7 +23,7 @@ import carpenterWorkbench from "@/assets/carpenter-workbench.jpg";
 import carpenterSanding from "@/assets/carpenter-sanding.jpg";
 import carpenterKneeling from "@/assets/carpenter-kneeling.jpg";
 
-type Screen = "home" | "quiz" | "results";
+type Screen = "splash" | "profession" | "home" | "quiz" | "results";
 
 const risks = [
   {
@@ -109,7 +111,7 @@ const ratingOptions: { value: Rating; label: string; score: number; activeClasse
 ];
 
 const Index = () => {
-  const [screen, setScreen] = useState<Screen>("home");
+  const [screen, setScreen] = useState<Screen>("splash");
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [ratings, setRatings] = useState<Record<string, Rating>>({});
 
@@ -138,6 +140,14 @@ const Index = () => {
       overallClasses = "bg-destructive/10 border-destructive/40 text-destructive";
       overallTip = "O posto apresenta riscos significativos. Atue com prioridade nos fatores avaliados como 'Mau'.";
     }
+  }
+
+  if (screen === "splash") {
+    return <Splash onContinue={() => setScreen("profession")} />;
+  }
+
+  if (screen === "profession") {
+    return <Profession onContinue={() => setScreen("home")} />;
   }
 
   if (screen === "quiz") {
