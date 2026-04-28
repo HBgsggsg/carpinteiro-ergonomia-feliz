@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
-import coverImage from "@/assets/carpentry-splash.jpg";
-import workbenchImage from "@/assets/carpenter-workbench.jpg";
-import sandingImage from "@/assets/carpenter-sanding.jpg";
-import kneelingImage from "@/assets/carpenter-kneeling.jpg";
+import workshopImage from "@/assets/slide-workshop.jpg";
+import workbenchImage from "@/assets/slide-workbench.jpg";
+import toolsImage from "@/assets/slide-tools.jpg";
+import postureImage from "@/assets/slide-posture.jpg";
+import ergonomicImage from "@/assets/slide-ergonomic.jpg";
 
 interface Props {
   onFinish: () => void;
@@ -16,7 +17,7 @@ type Slide = {
   subtitle?: string;
   bullets?: string[];
   meta?: string[];
-  image?: string;
+  image: string;
 };
 
 const slides: Slide[] = [
@@ -25,7 +26,7 @@ const slides: Slide[] = [
     title: "Ergonomia no Trabalho do Carpinteiro",
     subtitle: "Análise ergonómica e proposta de melhorias",
     meta: ["Henrique Batista | Henrique David", "UFCD 6669"],
-    image: coverImage,
+    image: workshopImage,
   },
   {
     kind: "content",
@@ -47,7 +48,7 @@ const slides: Slide[] = [
       "Trabalha em oficina ou em obra",
       "Exige precisão, força física e criatividade",
     ],
-    image: sandingImage,
+    image: toolsImage,
   },
   {
     kind: "content",
@@ -59,7 +60,7 @@ const slides: Slide[] = [
       "Síndrome de vibração mão-braço",
       "Fadiga muscular por falta de pausas",
     ],
-    image: kneelingImage,
+    image: postureImage,
   },
   {
     kind: "content",
@@ -71,7 +72,7 @@ const slides: Slide[] = [
       "Usar luvas antivibrações e joelheiras profissionais",
       "Praticar exercícios de mobilidade antes e após o trabalho",
     ],
-    image: workbenchImage,
+    image: ergonomicImage,
   },
 ];
 
@@ -80,76 +81,119 @@ export default function Slideshow({ onFinish }: Props) {
   const slide = slides[index];
   const isLast = index === slides.length - 1;
   const isFirst = index === 0;
+  const progress = ((index + 1) / slides.length) * 100;
+
+  // Preload next image
+  useEffect(() => {
+    const next = slides[index + 1];
+    if (next) {
+      const img = new Image();
+      img.src = next.image;
+    }
+  }, [index]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight" && !isLast) setIndex((i) => i + 1);
+      if (e.key === "ArrowLeft" && !isFirst) setIndex((i) => i - 1);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [isLast, isFirst]);
 
   return (
     <div className="min-h-screen bg-secondary/40 flex flex-col items-center justify-center p-4 md:p-8">
-      <div className="w-full max-w-5xl aspect-[16/9] bg-card rounded-xl shadow-2xl overflow-hidden border border-border flex flex-col">
-        {slide.kind === "cover" ? (
-          <div className="relative flex-1 flex items-center justify-center text-center">
-            {slide.image && (
-              <>
-                <img
-                  src={slide.image}
-                  alt=""
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-foreground/70" />
-              </>
-            )}
-            <div className="relative z-10 px-8 space-y-4 max-w-3xl">
-              <h1 className="text-3xl md:text-5xl font-bold text-background tracking-tight">
-                {slide.title}
-              </h1>
-              {slide.subtitle && (
-                <p className="text-lg md:text-2xl text-background/90 italic">
-                  {slide.subtitle}
-                </p>
-              )}
-              {slide.meta && (
-                <div className="pt-6 space-y-1 text-background/80 text-sm md:text-base">
-                  {slide.meta.map((m) => (
-                    <p key={m}>{m}</p>
+      <div className="w-full max-w-5xl aspect-[16/9] bg-card rounded-xl shadow-2xl overflow-hidden border border-border flex flex-col relative">
+        {/* Background image with ken-burns parallax */}
+        <div key={`bg-${index}`} className="absolute inset-0 overflow-hidden">
+          <img
+            src={slide.image}
+            alt=""
+            width={1536}
+            height={1024}
+            className="w-full h-full object-cover animate-ken-burns"
+          />
+          <div className="absolute inset-0 bg-foreground/70" />
+        </div>
+
+        {/* Slide content */}
+        <div key={`content-${index}`} className="relative z-10 flex-1 flex flex-col animate-fade-in-up">
+          {slide.kind === "cover" ? (
+            <div className="flex-1 flex items-center justify-center text-center px-8">
+              <div className="space-y-4 max-w-3xl">
+                <h1
+                  className="text-3xl md:text-5xl font-bold text-background tracking-tight animate-fade-in-up"
+                  style={{ animationDelay: "100ms" }}
+                >
+                  {slide.title}
+                </h1>
+                {slide.subtitle && (
+                  <p
+                    className="text-lg md:text-2xl text-background/90 italic animate-fade-in-up"
+                    style={{ animationDelay: "300ms" }}
+                  >
+                    {slide.subtitle}
+                  </p>
+                )}
+                {slide.meta && (
+                  <div className="pt-6 space-y-1 text-background/80 text-sm md:text-base">
+                    {slide.meta.map((m, i) => (
+                      <p
+                        key={m}
+                        className="animate-fade-in-up"
+                        style={{ animationDelay: `${500 + i * 150}ms` }}
+                      >
+                        {m}
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="flex-1 flex flex-col">
+              <div
+                className="bg-primary/95 backdrop-blur px-8 py-5 border-b-4 border-primary/70 animate-slide-fade-in"
+              >
+                <h2 className="text-2xl md:text-3xl font-bold text-primary-foreground">
+                  {slide.title}
+                </h2>
+              </div>
+              <div className="flex-1 flex items-center p-6 md:p-10">
+                <ul className="space-y-3 md:space-y-4 max-w-3xl">
+                  {slide.bullets?.map((b, i) => (
+                    <li
+                      key={b}
+                      className="flex gap-3 text-base md:text-lg text-background animate-fade-in-up"
+                      style={{ animationDelay: `${300 + i * 180}ms` }}
+                    >
+                      <span className="mt-2 w-2.5 h-2.5 rounded-full bg-primary shrink-0 shadow-lg" />
+                      <span className="leading-relaxed drop-shadow">{b}</span>
+                    </li>
                   ))}
-                </div>
-              )}
+                </ul>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="flex-1 flex flex-col">
-            <div className="bg-primary px-8 py-5 border-b-4 border-primary/70">
-              <h2 className="text-2xl md:text-3xl font-bold text-primary-foreground">
-                {slide.title}
-              </h2>
-            </div>
-            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 p-6 md:p-10">
-              <ul className="space-y-3 md:space-y-4 self-center">
-                {slide.bullets?.map((b) => (
-                  <li key={b} className="flex gap-3 text-base md:text-lg text-card-foreground">
-                    <span className="mt-2 w-2.5 h-2.5 rounded-full bg-primary shrink-0" />
-                    <span className="leading-relaxed">{b}</span>
-                  </li>
-                ))}
-              </ul>
-              {slide.image && (
-                <div className="hidden md:block rounded-lg overflow-hidden border border-border">
-                  <img
-                    src={slide.image}
-                    alt=""
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-        )}
+          )}
+        </div>
+
+        {/* Progress bar */}
+        <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-foreground/20 z-20">
+          <div
+            className="h-full bg-primary transition-all duration-500 ease-out"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
       </div>
 
+      {/* Controls */}
       <div className="w-full max-w-5xl mt-6 flex items-center justify-between gap-4">
         <Button
           variant="outline"
           onClick={() => setIndex((i) => Math.max(0, i - 1))}
           disabled={isFirst}
-          className="gap-2"
+          className="gap-2 transition-all duration-200 hover:-translate-x-1 hover:shadow-md disabled:hover:translate-x-0"
         >
           <ChevronLeft className="w-4 h-4" />
           Anterior
@@ -165,8 +209,8 @@ export default function Slideshow({ onFinish }: Props) {
                 key={i}
                 onClick={() => setIndex(i)}
                 aria-label={`Ir para slide ${i + 1}`}
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  i === index ? "bg-primary" : "bg-border hover:bg-muted-foreground/40"
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  i === index ? "bg-primary w-6" : "bg-border hover:bg-muted-foreground/40 w-2"
                 }`}
               />
             ))}
@@ -174,12 +218,18 @@ export default function Slideshow({ onFinish }: Props) {
         </div>
 
         {isLast ? (
-          <Button onClick={onFinish} className="gap-2">
+          <Button
+            onClick={onFinish}
+            className="gap-2 transition-all duration-200 hover:translate-x-1 hover:shadow-lg"
+          >
             Ver Site
             <ArrowRight className="w-4 h-4" />
           </Button>
         ) : (
-          <Button onClick={() => setIndex((i) => Math.min(slides.length - 1, i + 1))} className="gap-2">
+          <Button
+            onClick={() => setIndex((i) => Math.min(slides.length - 1, i + 1))}
+            className="gap-2 transition-all duration-200 hover:translate-x-1 hover:shadow-md"
+          >
             Seguinte
             <ChevronRight className="w-4 h-4" />
           </Button>
